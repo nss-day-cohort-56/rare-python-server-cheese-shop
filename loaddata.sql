@@ -88,3 +88,12 @@ CREATE TABLE "Categories" (
 INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
+
+
+INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active') VALUES ('Testy', 'Testerson', 'testing@tester.com', 'I am a dynamic placeholder bot who likes a stiff negroni and long walks on the beach', 'testrr42069', NULL, 2022-07-23 11:44:02.966793, 1);
+INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active') VALUES ('Donny', 'Osmund', 'joe@jatatdc.com', 'I am maybe the most famous Mormon there is', 'donnyboi', NULL, 2022-07-24 11:44:02.966793, 1);
+
+INSERT INTO Posts 
+VALUES ('Donny', 'Osmund', 'joe@jatatdc.com', 'I am maybe the most famous Mormon there is', 'donnyboi', NULL, 2022-07-24 11:44:02.966793, 1);
+
+
