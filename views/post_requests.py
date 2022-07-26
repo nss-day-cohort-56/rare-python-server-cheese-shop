@@ -2,6 +2,7 @@ import sqlite3
 import json
 from models import Post
 
+
 def get_all_posts():
     """function to respond to client side for ./posts
     """
@@ -35,6 +36,7 @@ def get_all_posts():
             posts.append(post.__dict__)
     return json.dumps(posts)
 
+
 def get_single_post(id):
     """function to return single post from list"""
     with sqlite3.connect("./db.sqlite3") as conn:
@@ -60,6 +62,7 @@ def get_single_post(id):
                     data['title'], data['publication_date'], data['image_url'],
                     data['content'], data['approved'])
         return json.dumps(post.__dict__)
+
 def delete_post(id):
     """Delete Single Post
     Args:
@@ -107,6 +110,7 @@ def get_posts_by_user_id(user_id):
 
         return json.dumps(user_posts)
 
+
 def create_post(new_post):
     """
     Summary: function to create a new post
@@ -136,3 +140,4 @@ def create_post(new_post):
         new_post['id'] = id
 
     return json.dumps(new_post)
+

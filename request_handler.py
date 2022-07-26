@@ -1,13 +1,22 @@
+
 import json
 
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from views.post_requests import get_posts_by_user_id
 
 # POSTS
+
 from views import get_all_posts
 from views import get_single_post
 from views import delete_post
 from views import create_post
+
+
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post)
 
 
 # USERS
@@ -71,18 +80,30 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_post(id)}"
                 else:
                     response = f"{get_all_posts()}"
+        else:  # THere is a ? in the path, run the query param functions
+            (resource, query) = parsed
+
+            if query.get('user_id') and resource == "posts":
+                response = get_posts_by_user_id(query['user_id'][0])
+
         self.wfile.write(f"{response}".encode())
 
     def do_POST(self):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
+
         (resource, id) = self.parse_url(self.path)
 
         post_body = self.rfile.read(content_len)
 
         # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
+
+        post_body = json.loads(self.rfile.read(content_len))
+
+        (resource, id) = self.parse_url(self.path)
+
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
@@ -110,6 +131,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         (resource, id) = self.parse_url(self.path)
         if resource == "posts":
             delete_post(id)
+
 
 
 def main():
