@@ -140,3 +140,14 @@ INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (2, 1, 'How sass
 
 
 
+SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved
+        FROM Posts p
+        WHERE p.user_id = ?
