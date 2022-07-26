@@ -1,16 +1,27 @@
 
 import json
+
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views.post_requests import get_posts_by_user_id
 
-from views.user import create_user, login_user
 # POSTS
+
+from views import get_all_posts
+from views import get_single_post
+from views import delete_post
+from views import create_post
+
+
 from views import (
     get_all_posts,
     get_single_post,
     delete_post)
 
+
+# USERS
+from views import create_user
+from views import login_user
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -81,16 +92,34 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
+
+        (resource, id) = self.parse_url(self.path)
+
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
         post_body = json.loads(self.rfile.read(content_len))
 
         (resource, id) = self.parse_url(self.path)
 
-        if resource == 'login':
-            response = login_user(post_body)
-        if resource == 'register':
-            response = create_user(post_body)
 
-        self.wfile.write(response.encode())
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize the new post
+        new_post = None
+        user = None
+        if resource == 'login':
+            user = login_user(post_body)
+            self.wfile.write(f"{user}".encode())
+        if resource == 'register':
+            user = create_user(post_body)
+            self.wfile.write(f"{user}".encode())
+        if resource == "posts":
+            new_post = create_post(post_body)
+            self.wfile.write(f"{new_post(id)}".encode())
 
     # def do_PUT(self):
     #     """Handles PUT requests to the server"""
