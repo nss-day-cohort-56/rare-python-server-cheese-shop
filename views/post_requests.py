@@ -60,11 +60,6 @@ def get_single_post(id):
                     data['title'], data['publication_date'], data['image_url'],
                     data['content'], data['approved'])
         return json.dumps(post.__dict__)
-<<<<<<< Updated upstream
-=======
-
-<<<<<<< Updated upstream
-
 def delete_post(id):
     """Delete Single Post
     Args:
@@ -111,7 +106,7 @@ def get_posts_by_user_id(user_id):
             user_posts.append(post.__dict__)
 
         return json.dumps(user_posts)
-=======
+
 def create_post(new_post):
     """
     Summary: function to create a new post
@@ -141,5 +136,3 @@ def create_post(new_post):
         new_post['id'] = id
 
     return json.dumps(new_post)
->>>>>>> Stashed changes
->>>>>>> Stashed changes

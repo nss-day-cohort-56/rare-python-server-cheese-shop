@@ -1,31 +1,14 @@
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 import json
->>>>>>> Stashed changes
+
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from views.user import create_user, login_user
 # POSTS
-<<<<<<< Updated upstream
 from views import get_all_posts
 from views import get_single_post
-=======
-<<<<<<< Updated upstream
-from views import (
-    get_all_posts,
-    get_single_post,
-    delete_post)
-=======
-from views import get_all_posts
-from views import get_single_post
+from views import delete_post
 from views import create_post
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
 
 # USERS
 from views import create_user
@@ -94,18 +77,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
-<<<<<<< Updated upstream
-        post_body = json.loads(self.rfile.read(content_len))
-<<<<<<< Updated upstream
-        response = ''
-        resource, _ = self.parse_url()
-=======
-
         (resource, id) = self.parse_url(self.path)
-=======
+
         post_body = self.rfile.read(content_len)
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
         # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
@@ -130,9 +104,12 @@ class HandleRequests(BaseHTTPRequestHandler):
     #     """Handles PUT requests to the server"""
     #     pass
 
-    # def do_DELETE(self):
-    #     """Handle DELETE Requests"""
-    #     pass
+    def do_DELETE(self):
+        """Handle DELETE Requests"""
+        self._set_headers(204)
+        (resource, id) = self.parse_url(self.path)
+        if resource == "posts":
+            delete_post(id)
 
 
 def main():
