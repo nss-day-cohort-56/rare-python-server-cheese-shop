@@ -1,5 +1,7 @@
+import json
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from views.post_requests import get_posts_by_user_id
 
 from views.user import create_user, login_user
 # POSTS
@@ -64,6 +66,12 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_post(id)}"
                 else:
                     response = f"{get_all_posts()}"
+        else:  # THere is a ? in the path, run the query param functions
+            (resource, query) = parsed
+
+            if query.get('user_id') and resource == "posts":
+                response = get_posts_by_user_id(query['user_id'][0])
+
         self.wfile.write(f"{response}".encode())
 
     def do_POST(self):
