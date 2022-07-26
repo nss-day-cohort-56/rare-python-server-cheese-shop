@@ -1,11 +1,35 @@
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
+import json
+>>>>>>> Stashed changes
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from views.user import create_user, login_user
 # POSTS
+<<<<<<< Updated upstream
 from views import get_all_posts
 from views import get_single_post
+=======
+<<<<<<< Updated upstream
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post)
+=======
+from views import get_all_posts
+from views import get_single_post
+from views import create_post
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
+# USERS
+from views import create_user
+from views import login_user
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -70,16 +94,37 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
+<<<<<<< Updated upstream
         post_body = json.loads(self.rfile.read(content_len))
+<<<<<<< Updated upstream
         response = ''
         resource, _ = self.parse_url()
+=======
 
+        (resource, id) = self.parse_url(self.path)
+=======
+        post_body = self.rfile.read(content_len)
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize the new post
+        new_post = None
+        user = None
         if resource == 'login':
-            response = login_user(post_body)
+            user = login_user(post_body)
+            self.wfile.write(f"{user}".encode())
         if resource == 'register':
-            response = create_user(post_body)
-
-        self.wfile.write(response.encode())
+            user = create_user(post_body)
+            self.wfile.write(f"{user}".encode())
+        if resource == "posts":
+            new_post = create_post(post_body)
+            self.wfile.write(f"{new_post(id)}".encode())
 
     # def do_PUT(self):
     #     """Handles PUT requests to the server"""
