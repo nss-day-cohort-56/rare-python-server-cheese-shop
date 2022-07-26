@@ -1,3 +1,4 @@
+
 import json
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -5,8 +6,10 @@ from views.post_requests import get_posts_by_user_id
 
 from views.user import create_user, login_user
 # POSTS
-from views import get_all_posts
-from views import get_single_post
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -79,8 +82,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
-        response = ''
-        resource, _ = self.parse_url()
+
+        (resource, id) = self.parse_url(self.path)
 
         if resource == 'login':
             response = login_user(post_body)
@@ -93,9 +96,13 @@ class HandleRequests(BaseHTTPRequestHandler):
     #     """Handles PUT requests to the server"""
     #     pass
 
-    # def do_DELETE(self):
-    #     """Handle DELETE Requests"""
-    #     pass
+    def do_DELETE(self):
+        """Handle DELETE Requests"""
+        self._set_headers(204)
+        (resource, id) = self.parse_url(self.path)
+        if resource == "posts":
+            delete_post(id)
+
 
 
 def main():
