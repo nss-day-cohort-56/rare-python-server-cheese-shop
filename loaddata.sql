@@ -137,17 +137,3 @@ INSERT INTO PostTags ('post_id', 'tag_id') VALUES (2, 4);
 INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (1, 2, 'How inspiring!');
 INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (2, 1, 'How sassy!');
 
-
-
-
-SELECT
-            p.id,
-            p.user_id,
-            p.category_id,
-            p.title,
-            p.publication_date,
-            p.image_url,
-            p.content,
-            p.approved
-        FROM Posts p
-        WHERE p.user_id = ?
