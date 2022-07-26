@@ -1,11 +1,27 @@
+
+import json
+
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from views.post_requests import get_posts_by_user_id
 
-from views.user import create_user, login_user
 # POSTS
+
 from views import get_all_posts
 from views import get_single_post
+from views import delete_post
+from views import create_post
 
+
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post)
+
+
+# USERS
+from views import create_user
+from views import login_user
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -64,30 +80,58 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_post(id)}"
                 else:
                     response = f"{get_all_posts()}"
+        else:  # THere is a ? in the path, run the query param functions
+            (resource, query) = parsed
+
+            if query.get('user_id') and resource == "posts":
+                response = get_posts_by_user_id(query['user_id'][0])
+
         self.wfile.write(f"{response}".encode())
 
     def do_POST(self):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
+
+        (resource, id) = self.parse_url(self.path)
+
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
         post_body = json.loads(self.rfile.read(content_len))
-        response = ''
-        resource, _ = self.parse_url()
 
+        (resource, id) = self.parse_url(self.path)
+
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize the new post
+        new_post = None
+        user = None
         if resource == 'login':
-            response = login_user(post_body)
+            user = login_user(post_body)
+            self.wfile.write(f"{user}".encode())
         if resource == 'register':
-            response = create_user(post_body)
-
-        self.wfile.write(response.encode())
+            user = create_user(post_body)
+            self.wfile.write(f"{user}".encode())
+        if resource == "posts":
+            new_post = create_post(post_body)
+            self.wfile.write(f"{new_post(id)}".encode())
 
     # def do_PUT(self):
     #     """Handles PUT requests to the server"""
     #     pass
 
-    # def do_DELETE(self):
-    #     """Handle DELETE Requests"""
-    #     pass
+    def do_DELETE(self):
+        """Handle DELETE Requests"""
+        self._set_headers(204)
+        (resource, id) = self.parse_url(self.path)
+        if resource == "posts":
+            delete_post(id)
+
 
 
 def main():

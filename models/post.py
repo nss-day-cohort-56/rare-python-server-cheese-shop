@@ -1,7 +1,9 @@
 class Post():
     """class initializer
     """
-    def __init__(self, id, user_id, category_id, title, publication_date, image_url, content, approved):
+    def __init__(self, id, user_id, category_id,
+                 title, publication_date, image_url,
+                 content, approved):
         """function to create model of Post
 
         Args:
