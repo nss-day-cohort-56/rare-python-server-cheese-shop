@@ -1,10 +1,13 @@
+
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from views.user import create_user, login_user
 # POSTS
-from views import get_all_posts
-from views import get_single_post
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -85,9 +88,13 @@ class HandleRequests(BaseHTTPRequestHandler):
     #     """Handles PUT requests to the server"""
     #     pass
 
-    # def do_DELETE(self):
-    #     """Handle DELETE Requests"""
-    #     pass
+    def do_DELETE(self):
+        """Handle DELETE Requests"""
+        self._set_headers(204)
+        (resource, id) = self.parse_url(self.path)
+        if resource == "posts":
+            delete_post(id)
+
 
 
 def main():
