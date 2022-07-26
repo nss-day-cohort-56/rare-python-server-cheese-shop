@@ -5,6 +5,8 @@ from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views.post_requests import get_posts_by_user_id
 
+import json
+from views.user import create_user, login_user
 # POSTS
 
 from views import get_all_posts
