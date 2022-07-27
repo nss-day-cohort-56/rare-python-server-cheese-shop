@@ -141,3 +141,14 @@ INSERT INTO Categories
             ( label )
         VALUES
             ( 'new Test' );
+
+
+SELECT
+            c.id as comment_id,
+            c.post_id,
+            c.author_id,
+            c.content,
+            p.id as post_id
+        FROM Comments c
+        JOIN Posts p
+            ON c.post_id = p.id
