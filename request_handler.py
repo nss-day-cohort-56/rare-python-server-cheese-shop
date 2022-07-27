@@ -5,8 +5,6 @@ from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views.post_requests import get_posts_by_user_id
 
-import json
-from views.user import create_user, login_user
 # POSTS
 
 from views import get_all_posts
@@ -14,16 +12,12 @@ from views import get_single_post
 from views import delete_post
 from views import create_post
 
-
-from views import (
-    get_all_posts,
-    get_single_post,
-    delete_post)
-
-
 # USERS
 from views import create_user
 from views import login_user
+
+#CATEGORIES
+from views import create_category, delete_category, get_all_categories, get_single_category, update_category
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -82,6 +76,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_post(id)}"
                 else:
                     response = f"{get_all_posts()}"
+            if resource == "categories":
+                if id is not None:
+                    response = f"{get_single_category(id)}"
+                else:
+                    response = f"{get_all_categories()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
@@ -94,20 +93,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
-
-        (resource, id) = self.parse_url(self.path)
-
         post_body = self.rfile.read(content_len)
-
-        # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
 
-        post_body = json.loads(self.rfile.read(content_len))
-
-        (resource, id) = self.parse_url(self.path)
-
-
-        # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
         # Initialize the new post
@@ -121,11 +109,33 @@ class HandleRequests(BaseHTTPRequestHandler):
             self.wfile.write(f"{user}".encode())
         if resource == "posts":
             new_post = create_post(post_body)
-            self.wfile.write(f"{new_post(id)}".encode())
+            self.wfile.write(f"{new_post}".encode())
+        if resource == "categories":
+            new_post = create_category(post_body)
+            self.wfile.write(f"{new_post}".encode())
 
-    # def do_PUT(self):
-    #     """Handles PUT requests to the server"""
-    #     pass
+    def do_PUT(self):
+        """Handles PUT requests to the server
+        """
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        success = False
+
+        if resource == "categories":
+            success = update_category(id, post_body)
+        
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+        self.wfile.write("".encode())
+
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
@@ -133,6 +143,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         (resource, id) = self.parse_url(self.path)
         if resource == "posts":
             delete_post(id)
+        if resource == "categories":
+            delete_category(id)
 
 
 
