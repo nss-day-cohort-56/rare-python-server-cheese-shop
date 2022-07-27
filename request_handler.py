@@ -12,6 +12,14 @@ from views import get_single_post
 from views import delete_post
 from views import create_post
 
+
+from views import (
+    get_all_posts,
+    get_single_post,
+    delete_post,
+    get_all_tags)
+
+
 # USERS
 from views import create_user
 from views import login_user
@@ -81,6 +89,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
+            if resource == "tags":
+                if id is not None:
+                    pass
+                else:
+                    response = f"{get_all_tags()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
