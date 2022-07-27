@@ -137,3 +137,7 @@ INSERT INTO PostTags ('post_id', 'tag_id') VALUES (2, 4);
 INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (1, 2, 'How inspiring!');
 INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (2, 1, 'How sassy!');
 
+INSERT INTO Categories
+            ( label )
+        VALUES
+            ( 'new Test' );
