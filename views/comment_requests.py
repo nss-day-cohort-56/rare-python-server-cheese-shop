@@ -17,7 +17,8 @@ def get_all_comments():
             c.id,
             c.post_id,
             c.author_id,
-            c.content
+            c.content,
+            c.publication_date
         FROM Comments c
         """)
 
@@ -27,7 +28,7 @@ def get_all_comments():
 
         for row in dataset:
             comment = Comment(row['id'], row['post_id'],
-                              row['author_id'], row['content'])
+                              row['author_id'], row['content'], row['publication_date'])
 
             comments.append(comment.__dict__)
 
@@ -45,7 +46,8 @@ def get_single_comment(id):
             c.id,
             c.post_id,
             c.author_id,
-            c.content
+            c.content,
+            c.publication_date
         FROM Comments c
         WHERE c.id = ?
         """, (id, ))
@@ -53,7 +55,7 @@ def get_single_comment(id):
         data = db_cursor.fetchone()
 
         comment = Comment(data['id'], data['post_id'],
-                          data['author_id'], data['content'])
+                          data['author_id'], data['content'], data['publication_date'])
 
         return json.dumps(comment.__dict__)
 
@@ -70,6 +72,7 @@ def get_comments_by_post_id(post_id):
             c.post_id,
             c.author_id,
             c.content,
+            c.publication_date,
             p.id
         FROM Comments c
         JOIN Posts p
@@ -83,7 +86,7 @@ def get_comments_by_post_id(post_id):
 
         for row in dataset:
             comment = Comment(row['id'], row['post_id'],
-                              row['author_id'], row['content'])
+                              row['author_id'], row['content'], row['publication_date'])
 
             comments.append(comment.__dict__)
 
@@ -98,10 +101,10 @@ def create_comment(new_comment):
 
         db_cursor.execute("""
         INSERT INTO Comments
-            (post_id, author_id, content)
+            (post_id, author_id, content, publication_date)
             VALUES  
-            (?,?,?)
-        """, (new_comment['post_id'], new_comment['author_id'], new_comment['content']))
+            (?,?,?,?)
+        """, (new_comment['post_id'], new_comment['author_id'], new_comment['content'], new_comment['publication_date']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to

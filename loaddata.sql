@@ -142,18 +142,7 @@ INSERT INTO Categories
         VALUES
             ( 'new Test' );
 
-<<<<<<< HEAD
 
-SELECT
-            c.id as comment_id,
-            c.post_id,
-            c.author_id,
-            c.content,
-            p.id as post_id
-        FROM Comments c
-        JOIN Posts p
-            ON c.post_id = p.id
-=======
 SELECT
   p.id,
   p.user_id,
@@ -177,4 +166,3 @@ FROM Posts p
 JOIN Users u
   ON p.user_id = u.id
 WHERE p.user_id = 1;
->>>>>>> main
