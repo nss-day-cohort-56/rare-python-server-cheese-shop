@@ -194,4 +194,26 @@ def create_post(new_post):
         new_post['id'] = id
 
     return json.dumps(new_post)
+def update_post(id, new_post):
+    """
+    function to update post information
+    """
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
+        db_cursor.execute("""
+        UPDATE Posts
+            SET
+                title = ?,
+                content = ?,
+                category_id = ?,
+                image_url = ?
+        WHERE id = ?
+        """, (new_post['title'], new_post['content'], new_post['category_id'],
+              new_post['image_url'], id))
+
+        rows_affected = db_cursor.rowcount
+        if rows_affected == 0:
+            return False
+        else:
+            return True
