@@ -4,6 +4,10 @@ Please include a summary of the change and which issue is fixed. Please also inc
 
 Fixes # (issue)
 
+# How to Test
+
+Please describe how to test your new changes. (Walk through the test procedures as if you were talking to Michael Scott)
+
 ## Type of change
 
 Please delete options that are not relevant.
