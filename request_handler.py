@@ -10,7 +10,9 @@ from views import (
     get_all_posts,
     get_single_post,
     delete_post,
-    get_all_tags)
+    get_all_tags,
+    create_tag,
+    delete_tag)
 
 
 # USERS
@@ -120,6 +122,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Initialize the new post
         new_post = None
         user = None
+        new_tag = None
         if resource == 'login':
             user = login_user(post_body)
             self.wfile.write(f"{user}".encode())
@@ -132,7 +135,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "categories":
             new_post = create_category(post_body)
             self.wfile.write(f"{new_post}".encode())
-
+        if resource == "tags":
+            new_tag = create_tag(post_body)
+            self.wfile.write(f"{new_tag}".encode())
+            
     def do_PUT(self):
         """Handles PUT requests to the server
         """
@@ -164,6 +170,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "categories":
             delete_category(id)
+        if resource == "tags":
+            delete_tag(id)
 
 
 
