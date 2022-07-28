@@ -74,6 +74,7 @@ def get_comments_by_post_id(post_id):
         FROM Comments c
         JOIN Posts p
             ON c.post_id = p.id
+        WHERE p.id = (?)
         """, (post_id, ))
 
         comments = []
