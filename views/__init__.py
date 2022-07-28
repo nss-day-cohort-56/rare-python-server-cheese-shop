@@ -11,11 +11,17 @@ from .post_requests import (
     )
 
 # USERS
-from .user import login_user
-from .user import create_user
+from .user import (
+    login_user,
+    create_user,
+    get_all_users,
+    get_single_user)
+
 
 from .tag_requests import (
-    get_all_tags
+    get_all_tags,
+    create_tag,
+    delete_tag
 )
 
 

@@ -14,13 +14,26 @@ from views import (
     update_post,
     get_all_tags)
 
+    get_all_tags,
+    create_tag,
+    delete_tag)
+
+
 
 # USERS
-from views import create_user
-from views import login_user
+from views import (
+    create_user,
+    login_user,
+    get_all_users,
+    get_single_user)
 
 #CATEGORIES
-from views import create_category, delete_category, get_all_categories, get_single_category, update_category
+from views import (
+    create_category,
+    delete_category,
+    get_all_categories,
+    get_single_category,
+    update_category)
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -89,6 +102,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     pass
                 else:
                     response = f"{get_all_tags()}"
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
@@ -109,6 +127,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Initialize the new post
         new_post = None
         user = None
+        new_tag = None
         if resource == 'login':
             user = login_user(post_body)
             self.wfile.write(f"{user}".encode())
@@ -121,7 +140,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "categories":
             new_post = create_category(post_body)
             self.wfile.write(f"{new_post}".encode())
-
+        if resource == "tags":
+            new_tag = create_tag(post_body)
+            self.wfile.write(f"{new_tag}".encode())
+            
     def do_PUT(self):
         """Handles PUT requests to the server
         """
@@ -154,6 +176,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "categories":
             delete_category(id)
+        if resource == "tags":
+            delete_tag(id)
 
 
 
