@@ -1,7 +1,8 @@
 import sqlite3
 import json
-from models import Post
+from models import Post, Tag, Post_Tags
 from models.user import User
+
 
 
 def get_all_posts():
@@ -30,10 +31,20 @@ def get_all_posts():
             u.password,
             u.profile_image_url,
             u.created_on,
-            u.active
+            u.active,
+            pt.id,
+            pt.post_id,
+            pt.tag_id,
+            t.id,
+            t.label
         FROM Posts p
         JOIN users u
             ON u.id = p.user_id
+        JOIN posttags pt
+            ON p.id = pt.post_id
+        JOIN tags t
+            ON t.id = pt.tag_id
+
         """)
 
         posts = []

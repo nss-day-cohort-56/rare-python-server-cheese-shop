@@ -25,4 +25,8 @@ from .tag_requests import (
     delete_tag
 )
 
+from .post_tag_requests import (
+    get_all_post_tags,
+    create_post_tag
+)
 

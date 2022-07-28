@@ -1,5 +1,6 @@
 
 import json
+from tkinter.messagebox import NO
 
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -28,6 +29,7 @@ from views import login_user
 
 #CATEGORIES
 from views import create_category, delete_category, get_all_categories, get_single_category, update_category
+from views.post_tag_requests import create_post_tag, get_all_post_tags
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -96,6 +98,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     pass
                 else:
                     response = f"{get_all_tags()}"
+            if resource == "postTags":
+                if id is not None:
+                    pass
+                else:
+                    response = f"{get_all_post_tags()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
@@ -117,6 +124,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         new_post = None
         user = None
         new_tag = None
+        new_post_tag = None
         if resource == 'login':
             user = login_user(post_body)
             self.wfile.write(f"{user}".encode())
@@ -132,7 +140,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "tags":
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
-            
+        if resource == "postTags":
+            new_post_tag = create_post_tag(post_body)
+            self.wfile.write(f"{new_post_tag}".encode())
+
     def do_PUT(self):
         """Handles PUT requests to the server
         """
