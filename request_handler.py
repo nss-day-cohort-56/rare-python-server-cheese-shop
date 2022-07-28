@@ -6,13 +6,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from views.post_requests import get_posts_by_user_id
 
 # POSTS
-
-from views import get_all_posts
-from views import get_single_post
-from views import delete_post
-from views import create_post
-
-
 from views import (
     get_all_posts,
     get_single_post,
@@ -21,11 +14,19 @@ from views import (
 
 
 # USERS
-from views import create_user
-from views import login_user
+from views import (
+    create_user,
+    login_user,
+    get_all_users,
+    get_single_user)
 
 #CATEGORIES
-from views import create_category, delete_category, get_all_categories, get_single_category, update_category
+from views import (
+    create_category,
+    delete_category,
+    get_all_categories,
+    get_single_category,
+    update_category)
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -94,6 +95,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     pass
                 else:
                     response = f"{get_all_tags()}"
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
