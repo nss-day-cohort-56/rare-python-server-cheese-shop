@@ -145,6 +145,36 @@ INSERT INTO Categories
 
 
 SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved,
+            u.id,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.bio,
+            u.username,
+            u.password,
+            u.profile_image_url,
+            u.created_on,
+            u.active,
+            pt.id,
+            pt.post_id,
+            pt.tag_id,
+            t.id,
+            t.label
+        FROM Posts p
+        JOIN users u
+            ON u.id = p.user_id
+        JOIN posttags pt
+            ON p.id = pt.post_id
+        JOIN tags t
+            ON t.id = pt.tag_id
   p.id,
   p.user_id,
   p.category_id,

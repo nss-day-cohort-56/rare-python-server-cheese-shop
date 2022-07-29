@@ -1,7 +1,8 @@
 import sqlite3
 import json
-from models import Post
+from models import Post, Tag, Post_Tags, tag
 from models.user import User
+
 
 
 def get_all_posts():
@@ -31,10 +32,20 @@ def get_all_posts():
             u.profile_image_url,
             u.created_on,
             u.active,
-            u.is_staff
+            u.is_staff,
+            pt.id,
+            pt.post_id,
+            pt.tag_id,
+            t.id,
+            t.label
         FROM Posts p
         JOIN users u
             ON u.id = p.user_id
+        LEFT JOIN posttags pt
+            ON p.id = pt.post_id
+        LEFT JOIN tags t
+            ON t.id = pt.tag_id
+
         """)
 
         posts = []
@@ -198,6 +209,35 @@ def create_post(new_post):
         # was sent by the client so that the client sees the
         # primary key in the response.
         new_post['id'] = id
+        
+
+    return json.dumps(new_post)
+
+def create_post_tags(new_post):
+    """
+    Summary: function to create a new post
+
+    Args:
+        new_post
+    """
+    for tag in new_post['tags']:
+        with sqlite3.connect("db.sqlite3") as conn:
+            db_cursor = conn.cursor()
+            db_cursor.execute("""
+            INSERT INTO Posttags
+                ( post_id, tag_id)
+                VALUES
+                (?, ?);
+            """, (new_post['post_id'], tag))
+
+            # The `lastrowid` property on the cursor will return
+            # the primary key of the last thing that got added to
+            # the database.
+
+            # Add the `id` property to the entry dictionary that
+            # was sent by the client so that the client sees the
+            # primary key in the response
+
 
     return json.dumps(new_post)
 def update_post(id, new_post):
