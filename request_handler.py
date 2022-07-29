@@ -10,9 +10,12 @@ from views import (
     get_all_posts,
     get_single_post,
     delete_post,
+    create_post,
+    update_post,
     get_all_tags,
     create_tag,
     delete_tag)
+
 
 
 # USERS
@@ -142,18 +145,19 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_PUT(self):
         """Handles PUT requests to the server
         """
+        self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-
         success = False
 
         if resource == "categories":
             success = update_category(id, post_body)
-        
+        if resource == "posts":
+            update_post(id, post_body)
         if success:
             self._set_headers(204)
         else:
