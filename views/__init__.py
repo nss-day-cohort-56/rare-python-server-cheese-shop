@@ -7,7 +7,8 @@ from .post_requests import (
     get_single_post,
     delete_post,
     create_post,
-    update_post
+    update_post,
+    create_post_tags
     )
 
 # USERS
@@ -30,3 +31,11 @@ from .post_tag_requests import (
     create_post_tag
 )
 
+from .comment_requests import (
+    get_all_comments, 
+    get_comments_by_post_id,
+    delete_comment,
+    create_comment,
+    update_comment,
+    get_single_comment
+)
