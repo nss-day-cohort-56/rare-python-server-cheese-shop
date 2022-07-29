@@ -21,7 +21,8 @@ from .user import (
 from .tag_requests import (
     get_all_tags,
     create_tag,
-    delete_tag
+    delete_tag,
+    update_tag
 )
 
 

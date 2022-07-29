@@ -12,12 +12,14 @@ from views import (
     get_single_post,
     delete_post,
     create_post,
-    update_post,
+    update_post)
+
+# TAGS
+from views import (
     get_all_tags,
     create_tag,
-    delete_tag)
-
-
+    delete_tag,
+    update_tag)
 
 # USERS
 from views import (
@@ -173,11 +175,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "categories":
             success = update_category(id, post_body)
 
-        if resource == "comments":
+        elif resource == "comments":
             success = update_comment(id, post_body)
 
-        if resource == "posts":
+        elif resource == "posts":
             update_post(id, post_body)
+        
+        elif resource == "tags":
+            update_tag(id, post_body)
         if success:
             self._set_headers(204)
         else:
