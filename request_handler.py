@@ -4,32 +4,42 @@ from tkinter.messagebox import NO
 
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from views.comment_requests import create_comment, delete_comment, get_all_comments, get_comments_by_post_id, get_single_comment, update_comment
 from views.post_requests import get_posts_by_user_id
 
 # POSTS
-
-from views import get_all_posts
-from views import get_single_post
-from views import delete_post
-from views import create_post
-
-
 from views import (
     get_all_posts,
     get_single_post,
     delete_post,
+    create_post,
+    update_post)
+
+# TAGS
+from views import (
     get_all_tags,
     create_tag,
-    delete_tag)
-
+    delete_tag,
+    update_tag)
 
 # USERS
-from views import create_user
-from views import login_user
+from views import (
+    create_user,
+    login_user,
+    get_all_users,
+    get_single_user)
 
-#CATEGORIES
+# CATEGORIES
 from views import create_category, delete_category, get_all_categories, get_single_category, update_category
 from views.post_tag_requests import create_post_tag, get_all_post_tags
+#CATEGORIES
+from views import (
+    create_category,
+    delete_category,
+    get_all_categories,
+    get_single_category,
+    update_category)
+
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
@@ -93,6 +103,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
+            if resource == "comments":
+                if id is not None:
+                    response = f"{get_single_comment(id)}"
+                else:
+                    response = f"{get_all_comments()}"
             if resource == "tags":
                 if id is not None:
                     pass
@@ -103,11 +118,19 @@ class HandleRequests(BaseHTTPRequestHandler):
                     pass
                 else:
                     response = f"{get_all_post_tags()}"
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
             if query.get('user_id') and resource == "posts":
                 response = get_posts_by_user_id(query['user_id'][0])
+
+            if query.get('post_id') and resource == "comments":
+                response = get_comments_by_post_id(query['post_id'][0])
 
         self.wfile.write(f"{response}".encode())
 
@@ -137,6 +160,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "categories":
             new_post = create_category(post_body)
             self.wfile.write(f"{new_post}".encode())
+        if resource == "comments":
+            new_comment = create_comment(post_body)
+            self.wfile.write(f"{new_comment}".encode())
+
         if resource == "tags":
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
@@ -147,25 +174,32 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_PUT(self):
         """Handles PUT requests to the server
         """
+        self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-
         success = False
 
         if resource == "categories":
             success = update_category(id, post_body)
+
+        elif resource == "comments":
+            success = update_comment(id, post_body)
+
+        elif resource == "posts":
+            update_post(id, post_body)
         
+        elif resource == "tags":
+            update_tag(id, post_body)
         if success:
             self._set_headers(204)
         else:
             self._set_headers(404)
 
         self.wfile.write("".encode())
-
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
@@ -175,6 +209,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "categories":
             delete_category(id)
+        if resource == "comments":
+            delete_comment(id)
         if resource == "tags":
             delete_tag(id)
 

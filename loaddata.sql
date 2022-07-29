@@ -106,7 +106,8 @@ CREATE TABLE "Users" (
   "password" varchar,
   "profile_image_url" varchar,
   "created_on" date,
-  "active" bit
+  "active" bit,
+  "is_staff" boolean
 );
 
 INSERT INTO `Categories` VALUES (null, 'Rants');
@@ -123,8 +124,8 @@ INSERT INTO Reactions ('label', 'image_url') VALUES ('fire', 'https://freepngimg
 INSERT INTO Reactions ('label', 'image_url') VALUES ('pirate', 'https://freepngimg.com/thumb/emoji/65088-emoticon-piracy-smiley-pirate-emoji-png-image-high-quality.png');
 
 
-INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active') VALUES ('Testy', 'Testerson', 'testing@tester.com', 'I am a dynamic placeholder bot who likes a stiff negroni and long walks on the beach', 'testrr42069', 'password', NULL, '2022-07-23 11:44:02.966793', 1);
-INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active') VALUES ('Donny', 'Osmund', 'joe@jatatdc.com', 'I am maybe the most famous Mormon there is', 'donnyboi', 'password', NULL, '2022-07-24 11:44:02.966793', 1);
+INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active', 'is_staff') VALUES ('Testy', 'Testerson', 'testing@tester.com', 'I am a dynamic placeholder bot who likes a stiff negroni and long walks on the beach', 'testrr42069', 'password', NULL, '2022-07-23 11:44:02.966793', 1, TRUE);
+INSERT INTO Users ('first_name', 'last_name', 'email', 'bio', 'username', 'password', 'profile_image_url', 'created_on', 'active', 'is_staff') VALUES ('Donny', 'Osmund', 'joe@jatatdc.com', 'I am maybe the most famous Mormon there is', 'donnyboi', 'password', NULL, '2022-07-24 11:44:02.966793', 1, FALSE);
 
 INSERT INTO `Posts` VALUES (null, 1, 1, 'The Legend of Testy', '2022-07-25 11:44:02.966793', 'https://sjo.com/wp-content/uploads/2018/04/mountaintopview-540x280.jpg', 'This is the story of my climb from a simple data placeholder to an all-powerful oil and gas magnate', 1);
 INSERT INTO `Posts` VALUES (null, 2, 2, 'Sing it, sister', '2022-07-23 11:44:02.966793', 'https://media.wkyc.com/assets/WKYC/images/28739739-968e-4774-ac4f-3093aaec3870/28739739-968e-4774-ac4f-3093aaec3870_1140x641.jpg', 'I love my sister. But for the record, I am better.', 1);
@@ -141,6 +142,7 @@ INSERT INTO Categories
             ( label )
         VALUES
             ( 'new Test' );
+
 
 SELECT
             p.id,
@@ -173,3 +175,25 @@ SELECT
             ON p.id = pt.post_id
         JOIN tags t
             ON t.id = pt.tag_id
+  p.id,
+  p.user_id,
+  p.category_id,
+  p.title,
+  p.publication_date,
+  p.image_url,
+  p.content,
+  p.approved,
+  u.id,
+  u.first_name,
+  u.last_name,
+  u.email,
+  u.bio,
+  u.username,
+  u.password,
+  u.profile_image_url,
+  u.created_on,
+  u.active
+FROM Posts p
+JOIN Users u
+  ON p.user_id = u.id
+WHERE p.user_id = 1;
