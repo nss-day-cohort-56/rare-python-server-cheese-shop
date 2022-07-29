@@ -104,6 +104,10 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
+            if resource == "tags":
+                if id is not None:
+                    pass
+                else:
                     response = f"{get_all_tags()}"
             if resource == "users":
                 if id is not None:
