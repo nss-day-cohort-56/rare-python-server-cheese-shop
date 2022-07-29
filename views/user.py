@@ -60,6 +60,7 @@ def get_all_users():
             u.active,
             u.is_staff
         FROM Users u
+        ORDER BY lower(u.username) ASC
         """)
 
         users = []
