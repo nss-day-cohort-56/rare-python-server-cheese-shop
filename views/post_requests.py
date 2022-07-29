@@ -12,7 +12,7 @@ def get_all_posts():
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-                SELECT
+        SELECT
             p.id,
             p.user_id,
             p.category_id,
@@ -30,7 +30,8 @@ def get_all_posts():
             u.password,
             u.profile_image_url,
             u.created_on,
-            u.active
+            u.active,
+            u.is_staff
         FROM Posts p
         JOIN users u
             ON u.id = p.user_id
@@ -48,7 +49,8 @@ def get_all_posts():
 
             user = User(row['id'], row['first_name'], row['last_name'], row['email'],
                         row['bio'], row['username'], row['password'],
-                        row['profile_image_url'], row['created_on'], row['active'])
+                        row['profile_image_url'], row['created_on'], row['active'],
+                        row['is_staff'])
 
             post.user = user.__dict__
             posts.append(post.__dict__)
@@ -80,7 +82,8 @@ def get_single_post(id):
             u.password,
             u.profile_image_url,
             u.created_on,
-            u.active
+            u.active,
+            u.is_staff
         FROM Posts p
         JOIN users u
             ON u.id = p.user_id
@@ -94,7 +97,8 @@ def get_single_post(id):
 
         user = User(data['id'], data['first_name'], data['last_name'], data['email'],
                         data['bio'], data['username'], data['password'],
-                        data['profile_image_url'], data['created_on'], data['active'])
+                        data['profile_image_url'], data['created_on'], data['active'],
+                        data['is_staff'])
 
         post.user = user.__dict__
         return json.dumps(post.__dict__)
@@ -138,7 +142,8 @@ def get_posts_by_user_id(user_id):
             u.password,
             u.profile_image_url,
             u.created_on,
-            u.active
+            u.active,
+            u.is_staff
         FROM Posts p
         JOIN Users u
             ON p.user_id = u.id
@@ -156,7 +161,8 @@ def get_posts_by_user_id(user_id):
 
             user = User(row['id'], row['first_name'], row['last_name'], row['email'],
                         row['bio'], row['username'], row['password'],
-                        row['profile_image_url'], row['created_on'], row['active'])
+                        row['profile_image_url'], row['created_on'], row['active'],
+                        row['is_staff'])
 
             post.user = user.__dict__
 
@@ -194,4 +200,26 @@ def create_post(new_post):
         new_post['id'] = id
 
     return json.dumps(new_post)
+def update_post(id, new_post):
+    """
+    function to update post information
+    """
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
+        db_cursor.execute("""
+        UPDATE Posts
+            SET
+                title = ?,
+                content = ?,
+                category_id = ?,
+                image_url = ?
+        WHERE id = ?
+        """, (new_post['title'], new_post['content'], new_post['category_id'],
+              new_post['image_url'], id))
+
+        rows_affected = db_cursor.rowcount
+        if rows_affected == 0:
+            return False
+        else:
+            return True

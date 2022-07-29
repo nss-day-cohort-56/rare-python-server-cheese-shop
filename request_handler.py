@@ -7,28 +7,34 @@ from views.comment_requests import create_comment, delete_comment, get_all_comme
 from views.post_requests import get_posts_by_user_id
 
 # POSTS
-
-from views import get_all_posts
-from views import get_single_post
-from views import delete_post
-from views import create_post
-
-
 from views import (
     get_all_posts,
     get_single_post,
     delete_post,
+    create_post,
+    update_post,
     get_all_tags,
     create_tag,
     delete_tag)
 
 
+
 # USERS
-from views import create_user
-from views import login_user
+from views import (
+    create_user,
+    login_user,
+    get_all_users,
+    get_single_user)
 
 # CATEGORIES
 from views import create_category, delete_category, get_all_categories, get_single_category, update_category
+#CATEGORIES
+from views import (
+    create_category,
+    delete_category,
+    get_all_categories,
+    get_single_category,
+    update_category)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -98,6 +104,12 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
+                    response = f"{get_all_tags()}"
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
         else:  # THere is a ? in the path, run the query param functions
             (resource, query) = parsed
 
@@ -145,13 +157,13 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_PUT(self):
         """Handles PUT requests to the server
         """
+        self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
 
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-
         success = False
 
         if resource == "categories":
@@ -160,6 +172,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "comments":
             success = update_comment(id, post_body)
 
+        if resource == "posts":
+            update_post(id, post_body)
         if success:
             self._set_headers(204)
         else:
