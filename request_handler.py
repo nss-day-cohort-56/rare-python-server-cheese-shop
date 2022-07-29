@@ -3,6 +3,7 @@ import json
 
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from views.comment_requests import create_comment, delete_comment, get_all_comments, get_comments_by_post_id, get_single_comment, update_comment
 from views.post_requests import get_posts_by_user_id
 
 # POSTS
@@ -27,6 +28,8 @@ from views import (
     get_all_users,
     get_single_user)
 
+# CATEGORIES
+from views import create_category, delete_category, get_all_categories, get_single_category, update_category
 #CATEGORIES
 from views import (
     create_category,
@@ -98,6 +101,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
+            if resource == "comments":
+                if id is not None:
+                    response = f"{get_single_comment(id)}"
+                else:
+                    response = f"{get_all_comments()}"
             if resource == "tags":
                 if id is not None:
                     pass
@@ -113,6 +121,9 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             if query.get('user_id') and resource == "posts":
                 response = get_posts_by_user_id(query['user_id'][0])
+
+            if query.get('post_id') and resource == "comments":
+                response = get_comments_by_post_id(query['post_id'][0])
 
         self.wfile.write(f"{response}".encode())
 
@@ -141,6 +152,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "categories":
             new_post = create_category(post_body)
             self.wfile.write(f"{new_post}".encode())
+        if resource == "comments":
+            new_comment = create_comment(post_body)
+            self.wfile.write(f"{new_comment}".encode())
+
         if resource == "tags":
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
@@ -159,8 +174,13 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "categories":
             success = update_category(id, post_body)
+
+        elif resource == "comments":
+            success = update_comment(id, post_body)
+
         elif resource == "posts":
             update_post(id, post_body)
+        
         elif resource == "tags":
             update_tag(id, post_body)
         if success:
@@ -170,7 +190,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         self.wfile.write("".encode())
 
-
     def do_DELETE(self):
         """Handle DELETE Requests"""
         self._set_headers(204)
@@ -179,6 +198,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "categories":
             delete_category(id)
+        if resource == "comments":
+            delete_comment(id)
         if resource == "tags":
             delete_tag(id)
 

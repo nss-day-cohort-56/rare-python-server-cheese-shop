@@ -143,6 +143,7 @@ INSERT INTO Categories
         VALUES
             ( 'new Test' );
 
+
 SELECT
   p.id,
   p.user_id,
