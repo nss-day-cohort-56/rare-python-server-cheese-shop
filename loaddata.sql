@@ -167,3 +167,15 @@ FROM Posts p
 JOIN Users u
   ON p.user_id = u.id
 WHERE p.user_id = 1;
+
+SELECT
+            c.id,
+            c.post_id,
+            c.author_id,
+            c.content,
+            c.publication_date,
+                p.id
+        FROM Comments c
+        JOIN Posts p
+            ON c.post_id = p.id
+        WHERE p.id = 2
