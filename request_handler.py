@@ -12,8 +12,6 @@ from views import (
     delete_post,
     create_post,
     update_post,
-    get_all_tags)
-
     get_all_tags,
     create_tag,
     delete_tag)
