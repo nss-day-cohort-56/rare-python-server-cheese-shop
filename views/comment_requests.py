@@ -73,7 +73,7 @@ def get_comments_by_post_id(post_id):
             c.author_id,
             c.content,
             c.publication_date,
-            p.id
+                p.id
         FROM Comments c
         JOIN Posts p
             ON c.post_id = p.id
